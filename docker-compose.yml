@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ms-users-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - ms-users-network
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=ms_users
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+
+  db:
+    image: mysql:8.0
+    container_name: ms-users-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ms_users
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      MYSQL_USER: ms_users
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - ms-users-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: ms-users-nginx
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - ms-users-network
+    depends_on:
+      - app
+
+networks:
+  ms-users-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local

@@ -1,0 +1,39 @@
+<?php
+
+namespace Domain\User\ValueObject;
+
+use Ramsey\Uuid\Uuid;
+
+class UserId
+{
+    private string $value;
+
+    private function __construct(string $value)
+    {
+        $this->value = $value;
+    }
+
+    public static function generate(): self
+    {
+        return new self(Uuid::uuid4()->toString());
+    }
+
+    public static function fromString(string $value): self
+    {
+        if (!Uuid::isValid($value)) {
+            throw new \InvalidArgumentException('Invalid UUID format');
+        }
+
+        return new self($value);
+    }
+
+    public function value(): string
+    {
+        return $this->value;
+    }
+
+    public function equals(UserId $other): bool
+    {
+        return $this->value === $other->value;
+    }
+}
