@@ -77,7 +77,12 @@ docker-compose up -d
 docker exec ms-users-app composer install
 ```
 
-4. Execute as migrations:
+4. Gere a chave da aplicação:
+```bash
+docker exec ms-users-app php artisan key:generate
+```
+
+5. Execute as migrations:
 ```bash
 docker exec ms-users-app php artisan migrate
 ```
