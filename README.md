@@ -61,25 +61,28 @@ src/
 
 ## Instalação
 
-1. Suba os containers:
+1. Clone o repositório e entre na pasta:
+```bash
+git clone https://github.com/matheuspdias/ms-users.git
+cd ms-users
+```
+
+2. Suba os containers:
 ```bash
 docker-compose up -d
 ```
 
-2. Instale as dependências do Composer:
+3. Instale as dependências do Composer:
 ```bash
-docker exec ms-users-app composer update
+docker exec ms-users-app composer install
 ```
 
-3. Execute as migrations:
+4. Execute as migrations:
 ```bash
 docker exec ms-users-app php artisan migrate
 ```
 
-4. Crie a fila no RabbitMQ (primeira vez):
-```bash
-docker exec ms-users-app php create-queue.php
-```
+**Nota**: A fila `user_events` será criada automaticamente quando o consumer rodar pela primeira vez.
 
 ## Configuração
 
