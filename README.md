@@ -245,6 +245,6 @@ docker-compose down
 ## Portas
 
 - **8081**: Nginx (API REST - opcional)
-- **3307**: MySQL
+- **3306**: MySQL
 - **5672**: RabbitMQ (compartilhado)
 - **15672**: RabbitMQ Management (compartilhado)
