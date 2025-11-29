@@ -105,17 +105,44 @@ RABBITMQ_QUEUE=user_events
 
 ## Uso
 
-### Consumir eventos do RabbitMQ
+### Consumer Automático
 
-Execute o comando para iniciar o consumer:
+O consumer do RabbitMQ **inicia automaticamente** quando o container sobe, graças ao Supervisor. Não é necessário executar comandos manuais!
+
+O Supervisor garante que:
+- O consumer inicia assim que o container é criado
+- Reinicia automaticamente em caso de falha
+- Continua rodando em background
+
+Para verificar se está funcionando, veja os logs:
 
 ```bash
-docker exec ms-users-app php artisan rabbitmq:consume-user-created
+docker logs -f ms-users-app
 ```
 
-O consumer ficará escutando a fila `user_events` e processará os eventos do tipo `user.created`.
+Ou veja o log específico do consumer:
 
-**Dica**: Você verá a mensagem `Waiting for messages on queue: user_events` quando o consumer estiver pronto.
+```bash
+docker exec ms-users-app tail -f storage/logs/consumer.log
+```
+
+### Gerenciar o Consumer (Opcional)
+
+Se precisar gerenciar manualmente o consumer via Supervisor:
+
+```bash
+# Ver status
+docker exec ms-users-app supervisorctl status
+
+# Parar o consumer
+docker exec ms-users-app supervisorctl stop laravel-consumer:*
+
+# Iniciar o consumer
+docker exec ms-users-app supervisorctl start laravel-consumer:*
+
+# Reiniciar o consumer
+docker exec ms-users-app supervisorctl restart laravel-consumer:*
+```
 
 ### Formato do evento esperado
 
@@ -178,6 +205,15 @@ docker exec -it ms-users-app php artisan migrate
 ```bash
 docker exec -it ms-users-app php artisan cache:clear
 docker exec -it ms-users-app php artisan config:clear
+```
+
+### Ver logs do consumer
+```bash
+# Logs do Supervisor
+docker exec -it ms-users-app supervisorctl tail -f laravel-consumer
+
+# Logs do Laravel
+docker exec -it ms-users-app tail -f storage/logs/consumer.log
 ```
 
 ### Parar os containers

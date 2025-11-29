@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libssh-dev \
-    librabbitmq-dev
+    librabbitmq-dev \
+    supervisor
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -36,7 +37,14 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
+# Copy supervisor configuration
+COPY supervisor/conf.d/*.conf /etc/supervisor/conf.d/
+
+# Copy start script
+COPY docker/start.sh /usr/local/bin/start
+RUN chmod +x /usr/local/bin/start
+
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 
-CMD ["php-fpm"]
+CMD ["/usr/local/bin/start"]
