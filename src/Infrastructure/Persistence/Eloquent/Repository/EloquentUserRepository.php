@@ -44,6 +44,11 @@ class EloquentUserRepository implements UserRepositoryInterface
         return UserModel::where('email', $email->value())->exists();
     }
 
+    public function findAll(): array
+    {
+        return UserModel::all()->map(fn($model) => $this->toDomain($model))->toArray();
+    }
+
     private function toDomain(UserModel $model): User
     {
         return new User(

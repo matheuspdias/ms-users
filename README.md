@@ -110,6 +110,83 @@ RABBITMQ_QUEUE=user_events
 
 ## Uso
 
+### API REST
+
+O microserviço expõe uma API REST para consultar usuários criados pelo consumer.
+
+**Base URL**: `http://localhost:8081/api/v1`
+
+#### Endpoints Disponíveis
+
+##### Listar Todos os Usuários
+
+```bash
+GET /users
+```
+
+**Exemplo de request:**
+```bash
+curl http://localhost:8081/api/v1/users
+```
+
+**Resposta de sucesso (200):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "9bcdcc8d-4bbb-42f0-8217-3c5b133ee6c9",
+      "name": "Matheus",
+      "email": "matheus@example.com",
+      "created_at": "2026-01-02 16:27:16",
+      "updated_at": "2026-01-02 16:27:16"
+    }
+  ],
+  "total": 1
+}
+```
+
+##### Buscar Usuário por ID
+
+```bash
+GET /users/{id}
+```
+
+**Exemplo de request:**
+```bash
+curl http://localhost:8081/api/v1/users/9bcdcc8d-4bbb-42f0-8217-3c5b133ee6c9
+```
+
+**Resposta de sucesso (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "9bcdcc8d-4bbb-42f0-8217-3c5b133ee6c9",
+    "name": "Matheus",
+    "email": "matheus@example.com",
+    "created_at": "2026-01-02 16:27:16",
+    "updated_at": "2026-01-02 16:27:16"
+  }
+}
+```
+
+**Resposta de erro - Usuário não encontrado (404):**
+```json
+{
+  "success": false,
+  "message": "User not found"
+}
+```
+
+**Resposta de erro - ID inválido (400):**
+```json
+{
+  "success": false,
+  "message": "Invalid UUID format"
+}
+```
+
 ### Consumer Automático
 
 O consumer do RabbitMQ **inicia automaticamente** quando o container sobe, graças ao Supervisor. Não é necessário executar comandos manuais!
