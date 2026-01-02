@@ -72,17 +72,22 @@ cd ms-users
 docker-compose up -d
 ```
 
-3. Instale as dependências do Composer:
+3. Copie o arquivo de ambiente:
+```bash
+cp src/.env.example src/.env
+```
+
+4. Instale as dependências do Composer:
 ```bash
 docker exec ms-users-app composer install
 ```
 
-4. Gere a chave da aplicação:
+5. Gere a chave da aplicação:
 ```bash
 docker exec ms-users-app php artisan key:generate
 ```
 
-5. Execute as migrations:
+6. Execute as migrations:
 ```bash
 docker exec ms-users-app php artisan migrate
 ```
